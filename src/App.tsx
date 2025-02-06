@@ -1,5 +1,5 @@
-import { HomeView } from '@/components/home/HomeView'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { HomeView } from '@/components/home/HomeView'
 import { ListProducts } from '@/components/products/ListProducts'
 
 function App() {
