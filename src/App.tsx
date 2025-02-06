@@ -1,14 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { HomeView } from '@/components/home/HomeView'
-import { ListProducts } from '@/components/products/ListProducts'
+import { BrowserRouter } from 'react-router'
+import { AppRoutes } from './router/routes'
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomeView />} />
-        <Route path="/products" element={<ListProducts />} />
-      </Routes>
+      <AppRoutes />
     </BrowserRouter>
   )
 }
