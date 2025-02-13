@@ -30,8 +30,8 @@ export const ProductsForm = () => {
   }, [])
 
   return (
-    <Form onSubmit={onSubmit}>
-      <div className=" w-full grid grid-cols-2 gap-12">
+    <Form className='gap-8' onSubmit={onSubmit}>
+      <div className=" w-full  grid grid-cols-1  sm:grid-cols-2 gap-8">
         <Input label="Name" placeholder="Ex. Milk" {...form.register('name')} isRequired />
         {errors.name && <span>{errors.name.message}</span>}
         <Select
@@ -60,9 +60,12 @@ export const ProductsForm = () => {
         />
         {errors.price && <span>{errors.price.message}</span>}
       </div>
-      <Button type="submit" variant="bordered">
-        Save
-      </Button>
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div />
+        <Button type="submit"color='primary' variant="bordered">
+          Save
+        </Button>
+      </div>
     </Form>
   )
 }
