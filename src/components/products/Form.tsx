@@ -1,39 +1,67 @@
-import { useState } from 'react'
-import { Button, Form, Input } from '@heroui/react'
+import { useEffect, useState } from 'react'
+import { getAllCategories } from '@/api/categories'
+import { productSchema, type Product } from '@/schemas/product'
+import { Button, Form, Input, Select, SelectItem } from '@heroui/react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import type { Category } from '@/types/products'
 
-type FormData = {
-  [k: string]: FormDataEntryValue
-}
 export const ProductsForm = () => {
-  const [submitted, setSubmitted] = useState<FormData>()
+  const form = useForm<Product>({
+    resolver: zodResolver(productSchema),
+  })
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const errors = form.formState.errors
 
-    const data = Object.fromEntries(new FormData(e.currentTarget))
+  const [categories, setCastegories] = useState<Category[]>([])
 
-    setSubmitted(data)
-  }
+  const onSubmit = form.handleSubmit((values) => {
+    console.log('val', values)
+  })
+
+  const newCategoriesValue = categories.map((category) => {
+    return { key: category.id, label: category.name }
+  })
+
+  useEffect(() => {
+    getAllCategories().then((data) => {
+      setCastegories(data)
+    })
+  }, [])
 
   return (
-    <Form className="w-full max-w-xs" validationBehavior="native" onSubmit={onSubmit}>
-      <Input
+    <Form className="w-full max-w-xs" onSubmit={onSubmit}>
+      <Input label="Name" placeholder="Ex. Milk" {...form.register('name')} isRequired />
+      {errors.name && <span>{errors.name.message}</span>}
+      <Select
         isRequired
-        errorMessage="Please enter a valid email"
-        label="Email"
-        labelPlacement="outside"
-        name="email"
-        placeholder="Enter your email"
-        type="email"
+        className="max-w-xs"
+        label="Category"
+        {...form.register('category', { required: true })}
+        placeholder="Select a Category"
+      >
+        {newCategoriesValue.map((newValue) => (
+          <SelectItem key={newValue.key}>{newValue.label}</SelectItem>
+        ))}
+      </Select>
+      {errors.category && <span>This field is required</span>}
+      <Input label="Packaging" placeholder="Ex. 1 L bottle" {...form.register('packaging')} />
+      {errors.name && <span>This field is required</span>}
+      <Input
+        type="number"
+        label="Price"
+        placeholder="0.00"
+        startContent={
+          <div className="pointer-events-none flex items-center">
+            <span className="text-default-400 text-small">$</span>
+          </div>
+        }
+        {...form.register('price')}
       />
+      {errors.price && <span>{errors.price.message}</span>}
       <Button type="submit" variant="bordered">
-        Submit
+        Save
       </Button>
-      {submitted && (
-        <div className="text-small text-default-500">
-          You submitted: <code>{JSON.stringify(submitted)}</code>
-        </div>
-      )}
     </Form>
   )
 }
