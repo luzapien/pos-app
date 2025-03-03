@@ -28,8 +28,8 @@ export const ProductsForm = () => {
         packaging: values.packaging,
         price: values.price,
       }
-      const respose = await createNewProduct(newProduct)
-      if (respose) {
+      const response = await createNewProduct(newProduct)
+      if (response) {
         addToast({
           title: 'Success',
           description: 'Product created successfully',
@@ -38,7 +38,7 @@ export const ProductsForm = () => {
       }
       form.reset()
     } catch (error) {
-      console.log('error in form submit', error)
+      console.log('error in create form submit', error)
       addToast({
         title: 'Error',
         description: 'Error creating product',

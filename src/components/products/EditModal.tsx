@@ -1,5 +1,7 @@
+import { editProduct } from '@/api/products'
 import { productSchema, type Product } from '@/schemas/product'
 import {
+  addToast,
   Button,
   Form,
   Input,
@@ -24,9 +26,9 @@ export const EditProductModal = (props: EditProductModalProps) => {
   const { newCategoriesValue } = useCategories()
 
   const form = useForm<Product>({
-    shouldUnregister: true,
     resolver: zodResolver(productSchema),
     defaultValues: {
+      id: props.product.id,
       name: props.product.name,
       category_id: props.product.category_id,
       packaging: props.product.packaging,
@@ -37,7 +39,29 @@ export const EditProductModal = (props: EditProductModalProps) => {
   const errors = form.formState.errors
 
   const onSubmit = form.handleSubmit(async (values) => {
-    console.log('form values', values)
+    try {
+      const updatedProduct = {
+        id: values.id,
+        name: values.name,
+        category_id: values.category_id,
+        packaging: values.packaging,
+      }
+      const response = await editProduct(props.product.id, updatedProduct)
+      if (response) {
+        addToast({
+          title: 'Success',
+          description: 'Product updated successfully',
+          color: 'success',
+        })
+      }
+    } catch (error) {
+      console.log('error in edit form submit', error)
+      addToast({
+        title: 'Error',
+        description: 'Error creating product',
+        color: 'danger',
+      })
+    }
   })
 
   return (

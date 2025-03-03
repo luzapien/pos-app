@@ -1,5 +1,4 @@
-import {  useEffect, useState } from 'react'
-import { getAllProducts } from '@/api/products'
+import { useEffect } from 'react'
 import {
   Chip,
   Table,
@@ -13,6 +12,7 @@ import {
 } from '@heroui/react'
 import { EditIcon, Trash2Icon } from 'lucide-react'
 import type { Product } from '@/types/products'
+import { useProducts } from '@/hooks/products/useProducts'
 import { EditProductModal } from './EditModal'
 
 const columns = [
@@ -36,7 +36,7 @@ const TableCellContent = ({ columnKey, product }: TableCellProps) => {
     case 'category':
       return (
         <div className="flex flex-col">
-          <p className="text-bold text-sm capitalize">{product.category.name}</p>
+          <p className="text-bold text-sm capitalize">{product.category?.name}</p>
         </div>
       )
     case 'packaging':
@@ -67,13 +67,13 @@ const TableCellContent = ({ columnKey, product }: TableCellProps) => {
 }
 
 export const ProductsTable = () => {
-  const [products, setProducts] = useState<Product[]>([])
+  const { products, getProducts } = useProducts()
 
   useEffect(() => {
-    getAllProducts().then((data) => {
-      setProducts(data)
-    })
-  }, [])
+    if (products) {
+      getProducts()
+    }
+  }, [getProducts, products])
 
   return (
     <>
