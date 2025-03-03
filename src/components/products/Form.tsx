@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getAllCategories } from '@/api/categories'
+import { createNewProduct } from '@/api/products'
 import { productSchema, type Product } from '@/schemas/product'
-import { Button, Form, Input, Select, SelectItem } from '@heroui/react'
+import { Button, Form, Input, Select, SelectItem, addToast } from '@heroui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import type { Category } from '@/types/categories'
@@ -15,8 +16,31 @@ export const ProductsForm = () => {
 
   const [categories, setCastegories] = useState<Category[]>([])
 
-  const onSubmit = form.handleSubmit((values) => {
-    console.log('val', values)
+  const onSubmit = form.handleSubmit(async(values) => {
+    try{
+      const newProduct = {
+        name: values.name,
+        category_id: values.category_id,
+        packaging: values.packaging,
+        price: values.price,
+      }
+      const respose = await createNewProduct(newProduct)
+      if(respose){
+        addToast({
+          title: "Success",
+          description: "Product created successfully",
+          color: "success",
+        })
+      }
+      form.reset()
+    }catch(error){
+      console.log("error in form submit",error)
+      addToast({
+        title: "Error",
+        description: "Error creating product",
+        color: "danger"
+      })
+    }
   })
 
   const newCategoriesValue = categories.map((category) => {
@@ -35,16 +59,15 @@ export const ProductsForm = () => {
         <Input label="Name" placeholder="Ex. Milk" {...form.register('name')} isRequired />
         {errors.name && <span>{errors.name.message}</span>}
         <Select
-          isRequired
           label="Category"
-          {...form.register('category', { required: true })}
+          {...form.register('category_id')}
           placeholder="Select a Category"
         >
           {newCategoriesValue.map((newValue) => (
             <SelectItem key={newValue.key}>{newValue.label}</SelectItem>
           ))}
         </Select>
-        {errors.category && <span>This field is required</span>}
+        {errors.category_id && <span>This field is required</span>}
         <Input label="Packaging" placeholder="Ex. 1 L bottle" {...form.register('packaging')} />
         {errors.name && <span>This field is required</span>}
         <Input

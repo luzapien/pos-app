@@ -7,3 +7,10 @@ export interface Product {
   category: Category
   category_id: string
 }
+
+export interface NewProduct {
+  name: string
+  packaging: string
+  category_id: string
+  price: number
+}
