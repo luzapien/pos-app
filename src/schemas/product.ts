@@ -3,7 +3,7 @@ import { z } from 'zod'
 const requiredStringField = z.string().min(1, 'This field is required')
 
 export const productSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   name: requiredStringField,
   category_id: z.string(),
   packaging: z.string(),

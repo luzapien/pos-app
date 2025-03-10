@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Chip,
   Table,
@@ -13,22 +13,26 @@ import {
 import { EditIcon, Trash2Icon } from 'lucide-react'
 import type { Product } from '@/types/products'
 import { useProducts } from '@/hooks/products/useProducts'
+import { DeleteProductModal } from './DeleteModal'
 import { EditProductModal } from './EditModal'
 
 const columns = [
   { name: 'NAME', uid: 'name' },
   { name: 'CATEGORY', uid: 'category' },
   { name: 'PACKAGING', uid: 'packaging' },
+  { name: 'PRICE', uid: 'price' },
   { name: 'ACTIONS', uid: 'actions' },
 ]
 
 interface TableCellProps {
   product: Product
   columnKey: string | number
+  getProducts: () => void
 }
 
-const TableCellContent = ({ columnKey, product }: TableCellProps) => {
+const TableCellContent = ({ columnKey, product, getProducts }: TableCellProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [isVisible, setIsVisible] = useState(false)
 
   switch (columnKey) {
     case 'name':
@@ -45,18 +49,36 @@ const TableCellContent = ({ columnKey, product }: TableCellProps) => {
           {product.packaging}
         </Chip>
       )
+    case 'price':
+      return product.price
     case 'actions':
       return (
         <div className="relative flex items-center gap-2">
           <Tooltip content="Edit product">
             <span className="cursor-pointer text-lg text-default-400 active:opacity-50">
               <EditIcon size={16} onClick={onOpen} />
-              <EditProductModal isOpen={isOpen} onOpenChange={onOpenChange} product={product} />
+              <EditProductModal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                product={product}
+                getProducts={getProducts}
+              />
             </span>
           </Tooltip>
           <Tooltip color="danger" content="Delete product">
             <span className="cursor-pointer text-lg text-danger active:opacity-50">
-              <Trash2Icon size={16} />
+              <Trash2Icon
+                size={16}
+                onClick={() => {
+                  setIsVisible(true)
+                }}
+              />
+              <DeleteProductModal
+                isVisible={isVisible}
+                setIsVisible={setIsVisible}
+                product={product}
+                getProducts={getProducts}
+              />
             </span>
           </Tooltip>
         </div>
@@ -70,10 +92,8 @@ export const ProductsTable = () => {
   const { products, getProducts } = useProducts()
 
   useEffect(() => {
-    if (products) {
-      getProducts()
-    }
-  }, [getProducts, products])
+    getProducts()
+  }, [getProducts])
 
   return (
     <>
@@ -86,7 +106,7 @@ export const ProductsTable = () => {
             <TableRow key={item.id}>
               {(columnKey) => (
                 <TableCell>
-                  <TableCellContent columnKey={columnKey} product={item} />
+                  <TableCellContent columnKey={columnKey} product={item} getProducts={getProducts} />
                 </TableCell>
               )}
             </TableRow>
