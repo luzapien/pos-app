@@ -10,8 +10,9 @@ export const getProductById = async (id: string) => {
   const { data } = await axios.get<Product>(`/products/${id}`)
   return data
 }
+
 export const createNewProduct = async (product: NewProduct) => {
-  const { data } = await axios.post<NewProduct>('/products', product)
+  const { data } = await axios.post<string>('/products', product)
   return data
 }
 

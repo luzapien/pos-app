@@ -1,5 +1,5 @@
 import { editProduct } from '@/api/products'
-import { productSchema, type Product } from '@/schemas/product'
+import { productSchema } from '@/schemas/product'
 import {
   addToast,
   Button,
@@ -15,24 +15,26 @@ import {
 } from '@heroui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import type { z } from 'zod'
+import type { Product } from '@/types/products'
 import { useCategories } from '@/hooks/categories/useCategories'
 
 type EditProductModalProps = {
   product: Product
   isOpen: boolean
   onOpenChange: () => void
+  getProducts: () => void
 }
-export const EditProductModal = (props: EditProductModalProps) => {
+export const EditProductModal = ({ product, isOpen, onOpenChange, getProducts }: EditProductModalProps) => {
   const { newCategoriesValue } = useCategories()
 
-  const form = useForm<Product>({
+  const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      id: props.product.id,
-      name: props.product.name,
-      category_id: props.product.category_id,
-      packaging: props.product.packaging,
-      price: props.product.price,
+      name: product.name,
+      category_id: product.category_id,
+      packaging: product.packaging,
+      price: product.price,
     },
   })
 
@@ -41,12 +43,13 @@ export const EditProductModal = (props: EditProductModalProps) => {
   const onSubmit = form.handleSubmit(async (values) => {
     try {
       const updatedProduct = {
-        id: values.id,
+        id: product.id,
         name: values.name,
         category_id: values.category_id,
+        price: values.price,
         packaging: values.packaging,
       }
-      const response = await editProduct(props.product.id, updatedProduct)
+      const response = await editProduct(product.id, updatedProduct)
       if (response) {
         addToast({
           title: 'Success',
@@ -54,6 +57,7 @@ export const EditProductModal = (props: EditProductModalProps) => {
           color: 'success',
         })
       }
+      getProducts()
     } catch (error) {
       console.log('error in edit form submit', error)
       addToast({
@@ -67,16 +71,16 @@ export const EditProductModal = (props: EditProductModalProps) => {
   return (
     <>
       <Modal
-        isOpen={props.isOpen}
+        isOpen={isOpen}
         onOpenChange={(isOpen) => {
-          props.onOpenChange()
+          onOpenChange()
           if (!isOpen) form.reset()
         }}
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">{props.product.name}</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">{product.name}</ModalHeader>
               <ModalBody>
                 <Form className="gap-8" onSubmit={onSubmit}>
                   <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-2">

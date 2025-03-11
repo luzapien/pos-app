@@ -1,6 +1,6 @@
 import { deleteProduct } from '@/api/products'
-import type { Product } from '@/schemas/product'
 import { addToast, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
+import type { Product } from '@/types/products'
 
 type DeleteAlertProps = {
   isVisible: boolean
