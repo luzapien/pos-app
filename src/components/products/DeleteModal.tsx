@@ -1,27 +1,26 @@
 import { deleteProduct } from '@/api/products'
 import { addToast, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
+import { useQueryClient } from '@tanstack/react-query'
 import type { Product } from '@/types/products'
 
 type DeleteAlertProps = {
   isVisible: boolean
   setIsVisible: (isVisible: boolean) => void
   product: Product
-  getProducts: () => void
 }
 
-export const DeleteProductModal = ({ isVisible, setIsVisible, product, getProducts }: DeleteAlertProps) => {
+export const DeleteProductModal = ({ isVisible, setIsVisible, product }: DeleteAlertProps) => {
+  const queryClient = useQueryClient()
   const handleDelete = async () => {
     if (product.id) {
       try {
-        const response = await deleteProduct(product.id)
-        if (response) {
-          addToast({
-            title: 'Success',
-            description: 'Product deleted successfully',
-            color: 'success',
-          })
-          getProducts()
-        }
+        await deleteProduct(product.id)
+        addToast({
+          title: 'Success',
+          description: 'Product deleted successfully',
+          color: 'success',
+        })
+        queryClient.invalidateQueries({ queryKey: ['products'] })
       } catch (error) {
         console.log(error)
         addToast({

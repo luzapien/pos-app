@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   Chip,
   Table,
@@ -27,10 +27,9 @@ const columns = [
 interface TableCellProps {
   product: Product
   columnKey: string | number
-  getProducts: () => void
 }
 
-const TableCellContent = ({ columnKey, product, getProducts }: TableCellProps) => {
+const TableCellContent = ({ columnKey, product }: TableCellProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [isVisible, setIsVisible] = useState(false)
 
@@ -57,12 +56,7 @@ const TableCellContent = ({ columnKey, product, getProducts }: TableCellProps) =
           <Tooltip content="Edit product">
             <span className="cursor-pointer text-lg text-default-400 active:opacity-50">
               <EditIcon size={16} onClick={onOpen} />
-              <EditProductModal
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                product={product}
-                getProducts={getProducts}
-              />
+              <EditProductModal isOpen={isOpen} onOpenChange={onOpenChange} product={product} />
             </span>
           </Tooltip>
           <Tooltip color="danger" content="Delete product">
@@ -73,12 +67,7 @@ const TableCellContent = ({ columnKey, product, getProducts }: TableCellProps) =
                   setIsVisible(true)
                 }}
               />
-              <DeleteProductModal
-                isVisible={isVisible}
-                setIsVisible={setIsVisible}
-                product={product}
-                getProducts={getProducts}
-              />
+              <DeleteProductModal isVisible={isVisible} setIsVisible={setIsVisible} product={product} />
             </span>
           </Tooltip>
         </div>
@@ -89,11 +78,7 @@ const TableCellContent = ({ columnKey, product, getProducts }: TableCellProps) =
 }
 
 export const ProductsTable = () => {
-  const { products, getProducts } = useProducts()
-
-  useEffect(() => {
-    getProducts()
-  }, [getProducts])
+  const { data: products } = useProducts()
 
   return (
     <>
@@ -101,12 +86,12 @@ export const ProductsTable = () => {
         <TableHeader columns={columns}>
           {(column) => <TableColumn key={column.uid}>{column.name}</TableColumn>}
         </TableHeader>
-        <TableBody items={products}>
+        <TableBody items={products || []}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (
                 <TableCell>
-                  <TableCellContent columnKey={columnKey} product={item} getProducts={getProducts} />
+                  <TableCellContent columnKey={columnKey} product={item} />
                 </TableCell>
               )}
             </TableRow>

@@ -14,6 +14,7 @@ import {
   SelectItem,
 } from '@heroui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 import type { Product } from '@/types/products'
@@ -23,9 +24,9 @@ type EditProductModalProps = {
   product: Product
   isOpen: boolean
   onOpenChange: () => void
-  getProducts: () => void
 }
-export const EditProductModal = ({ product, isOpen, onOpenChange, getProducts }: EditProductModalProps) => {
+export const EditProductModal = ({ product, isOpen, onOpenChange }: EditProductModalProps) => {
+  const queryClient = useQueryClient()
   const { newCategoriesValue } = useCategories()
 
   const form = useForm<z.infer<typeof productSchema>>({
@@ -49,15 +50,15 @@ export const EditProductModal = ({ product, isOpen, onOpenChange, getProducts }:
         price: values.price,
         packaging: values.packaging,
       }
-      const response = await editProduct(product.id, updatedProduct)
-      if (response) {
-        addToast({
-          title: 'Success',
-          description: 'Product updated successfully',
-          color: 'success',
-        })
-      }
-      getProducts()
+      await editProduct(product.id, updatedProduct)
+
+      addToast({
+        title: 'Success',
+        description: 'Product updated successfully',
+        color: 'success',
+      })
+
+      queryClient.invalidateQueries({ queryKey: ['products'] })
     } catch (error) {
       console.log('error in edit form submit', error)
       addToast({
