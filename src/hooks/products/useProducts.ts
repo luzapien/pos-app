@@ -1,18 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
 import { getAllProducts } from '@/api/products'
-import type { Product } from '@/types/products'
+import { useQuery } from '@tanstack/react-query'
 
 export const useProducts = () => {
-  const [products, setProducts] = useState<Product[]>([])
+  const query = useQuery({ queryKey: ['products'], queryFn: getAllProducts })
 
-  const getProducts = useCallback(() => {
-    getAllProducts().then((data) => {
-      setProducts(data)
-    })
-  }, [])
-
-  useEffect(() => {
-    getProducts()
-  }, [getProducts])
-  return { products, getProducts }
+  return query
 }
