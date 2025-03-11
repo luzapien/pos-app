@@ -1,12 +1,13 @@
 import { createNewProduct } from '@/api/products'
-import { productSchema, type Product } from '@/schemas/product'
+import { productSchema } from '@/schemas/product'
 import { addToast, Button, Form, Input, Select, SelectItem } from '@heroui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import type { z } from 'zod'
 import { useCategories } from '@/hooks/categories/useCategories'
 
 export const ProductsForm = () => {
-  const form = useForm<Product>({
+  const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: '',
@@ -64,6 +65,7 @@ export const ProductsForm = () => {
           type="number"
           label="Price"
           placeholder="0.00"
+          min={1}
           startContent={
             <div className="pointer-events-none flex items-center">
               <span className="text-small text-default-400">$</span>

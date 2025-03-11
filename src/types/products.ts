@@ -6,7 +6,7 @@ export interface Product {
   packaging: string
   category?: Category
   category_id: string
-  price?: number
+  price: number
 }
 
 export interface NewProduct {
