@@ -9,7 +9,7 @@ export interface Product {
   price: number
 }
 
-export interface NewProduct {
+export interface ProductPayload {
   name: string
   packaging: string
   category_id: string

@@ -1,19 +1,8 @@
-import { useEffect, useState } from 'react'
 import { getAllCategories } from '@/api/categories'
-import type { Category } from '@/types/categories'
+import { useQuery } from '@tanstack/react-query'
 
 export const useCategories = () => {
-  const [categories, setCategories] = useState<Category[]>([])
+  const query = useQuery({ queryKey: ['categories'], queryFn: getAllCategories })
 
-  const newCategoriesValue = categories.map((categorie) => {
-    return { key: categorie.id, label: categorie.name }
-  })
-
-  useEffect(() => {
-    getAllCategories().then((data) => {
-      setCategories(data)
-    })
-  }, [])
-
-  return { categories, newCategoriesValue }
+  return query
 }
