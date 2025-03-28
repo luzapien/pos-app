@@ -21,7 +21,7 @@ export const GeneralLayout = () => {
             </Link>
           </NavbarItem>
           <NavbarItem isActive={pathname === '/categories'}>
-            <Link color="foreground" href="">
+            <Link color="foreground" href="/categories">
               Categories
             </Link>
           </NavbarItem>

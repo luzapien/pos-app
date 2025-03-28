@@ -17,7 +17,12 @@ export const ProductsForm = () => {
     },
   })
 
-  const { newCategoriesValue } = useCategories()
+  const { data: categories } = useCategories()
+
+  const newCategoriesValue =
+    categories?.map((categorie) => {
+      return { key: categorie.id, label: categorie.name }
+    }) || []
 
   const errors = form.formState.errors
 
