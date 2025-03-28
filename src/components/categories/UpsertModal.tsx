@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { createNewCategory, editCategory } from '@/api/categories'
 import { categorySchema } from '@/schemas/categories'
 import { addToast, Button, Form, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
@@ -18,18 +17,10 @@ export const UpsertCategoryModal = ({ isOpen, onOpenChange, category }: CreateCa
   const form = useForm<z.infer<typeof categorySchema>>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: '',
+      name: category?.name || '',
     },
   })
   const errors = form.formState.errors
-
-  useEffect(() => {
-    if (category) {
-      form.reset(category)
-    } else {
-      form.reset({ name: '' })
-    }
-  }, [category, form])
 
   const onSubmit = form.handleSubmit(async (value) => {
     try {
