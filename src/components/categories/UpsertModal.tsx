@@ -32,15 +32,13 @@ export const UpsertCategoryModal = ({ isOpen, onOpenChange, category }: CreateCa
           color: 'success',
         })
       } else {
-        const response = await editCategory(category.id, value)
-        console.log(response)
+        await editCategory(category.id, value)
         addToast({
           title: 'Success',
           description: 'Category Updated successfully',
           color: 'success',
         })
       }
-
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       form.reset()
     } catch (error) {

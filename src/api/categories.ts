@@ -15,3 +15,8 @@ export const editCategory = async (id: string, category: CategoryPayload) => {
   const { data } = await axios.put<Category>(`/categories/${id}`, category)
   return data
 }
+
+export const deleteCategory = async (id: string) => {
+  const { data } = await axios.delete(`/categories/${id}`)
+  return data
+}
