@@ -14,7 +14,7 @@ export const GeneralLayout = () => {
             <p className="font-bold text-inherit">Point Of Sale</p>
           </Link>
         </NavbarBrand>
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarContent className="hidden gap-4 sm:flex" justify="center">
           <NavbarItem isActive={pathname === '/products'}>
             <Link color="foreground" href="/products">
               Products
@@ -26,8 +26,8 @@ export const GeneralLayout = () => {
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link color="foreground" href="#">
-              Integrations
+            <Link color="foreground" href="/bills/new">
+              New Bill
             </Link>
           </NavbarItem>
         </NavbarContent>
@@ -42,7 +42,7 @@ export const GeneralLayout = () => {
           </NavbarItem>
         </NavbarContent>
       </Navbar>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         <Outlet />
       </div>
     </>
