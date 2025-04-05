@@ -1,5 +1,5 @@
 import { axios } from '@/api/axios'
-import type { NewProduct, Product } from '@/types/products'
+import type { Product, ProductPayload } from '@/types/products'
 
 export const getAllProducts = async () => {
   const { data } = await axios.get<Product[]>('/products')
@@ -11,7 +11,7 @@ export const getProductById = async (id: string) => {
   return data
 }
 
-export const createNewProduct = async (product: NewProduct) => {
+export const createNewProduct = async (product: ProductPayload) => {
   const { data } = await axios.post<string>('/products', product)
   return data
 }

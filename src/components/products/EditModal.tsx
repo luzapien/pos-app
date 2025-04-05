@@ -27,7 +27,12 @@ type EditProductModalProps = {
 }
 export const EditProductModal = ({ product, isOpen, onOpenChange }: EditProductModalProps) => {
   const queryClient = useQueryClient()
-  const { newCategoriesValue } = useCategories()
+  const { data: categories } = useCategories()
+
+  const newCategoriesValue =
+    categories?.map((categorie) => {
+      return { key: categorie.id, label: categorie.name }
+    }) || []
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
